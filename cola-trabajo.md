@@ -22,6 +22,16 @@ los 10 cambios exigidos (C1–C10) **ya están aplicados** a `design.md`, `tasks
 - [ ] MB4 — Enforcement central del tenant (`AsyncLocalStorage` + `TenantGuard` + barrera 1 según el resultado del spike) y auth: email/password con `bcryptjs` (C1), roles owner/agente/viewer, throttler + helmet (C5), invitación con token hasheado y expirable (C5), alta de tenant cerrada por clave de administración (C6), cifrado AES-256-GCM con versión de clave (C5), escritura en `auditoria` (C10). **Sin 2FA** — mini-bloque posterior.
 - [ ] MB5 — Tests de aislamiento en `test/jest-e2e.json` (C9): A no ve nada de B, alternancia sobre el mismo pool sin fuga, query sin filtro que no devuelve filas ajenas, escritura ajena rechazada por `WITH CHECK`, y **la barrera 1 filtrando con RLS deshabilitado** (C2). Más pantalla de login con i18n ES/EN (default ES) y tema claro/oscuro.
 
+## Lanzador (run.bat)
+
+- [ ] item 6: `run.bat` en la raiz que levanta la app completa: BD (docker compose, espera a que este
+      sana), backend y frontend, cada uno en su ventana, y abre el navegador; solo las piezas que
+      existan. Si ya hay un lanzador que lo hace (`run_project.bat`, `levantar.bat`...), `run.bat`
+      solo lo llama. Nunca destructivo: sin `down -v`, seeds ni reset de BD. `pause` solo ante
+      error. Si el puerto de la BD esta ocupado, lo dice y no mata nada. Mecanico: concilio de 2,
+      `/code-review low`. Evidencia: correrlo, citar las URLs que respondieron y detener despues
+      solo lo que levanto la prueba.
+
 ## Obligaciones que el concilio dejó vigentes
 
 No son sugerencias: son deuda contraída por la propuesta que el mini-bloque indicado debe pagar.
