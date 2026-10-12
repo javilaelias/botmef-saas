@@ -24,13 +24,15 @@ los 10 cambios exigidos (C1–C10) **ya están aplicados** a `design.md`, `tasks
 
 ## Lanzador (run.bat)
 
-- [ ] item 6: `run.bat` en la raiz que levanta la app completa: BD (docker compose, espera a que este
-      sana), backend y frontend, cada uno en su ventana, y abre el navegador; solo las piezas que
-      existan. Si ya hay un lanzador que lo hace (`run_project.bat`, `levantar.bat`...), `run.bat`
-      solo lo llama. Nunca destructivo: sin `down -v`, seeds ni reset de BD. `pause` solo ante
-      error. Si el puerto de la BD esta ocupado, lo dice y no mata nada. Mecanico: concilio de 2,
-      `/code-review low`. Evidencia: correrlo, citar las URLs que respondieron y detener despues
-      solo lo que levanto la prueba.
+- [ ] Lanzador run.bat: `run.bat` en la raiz que levanta la app completa: BD (docker compose, espera
+      a que este sana), backend y frontend, cada uno en su ventana, y abre el navegador; solo las
+      piezas que existan. Si ya hay un lanzador que lo hace (`run_project.bat`, `levantar.bat`...),
+      `run.bat` solo lo llama. Sin nada que levantar en la PC (app solo movil): lanza lo que exista
+      (ej. `flutter run -d chrome`) o el item cierra con `N/A: <motivo>` sin crear archivo. Nunca
+      destructivo: sin `down -v`, seeds ni reset de BD. `pause` solo ante error. Si el puerto de
+      la BD esta ocupado, lo dice y no mata nada. Mecanico: concilio de 2, `/code-review low`.
+      Evidencia: correrlo, citar las URLs que respondieron (o lo que se vio) y detener despues solo
+      lo que levanto la prueba.
 
 ## Obligaciones que el concilio dejó vigentes
 
