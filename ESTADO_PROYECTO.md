@@ -1,6 +1,6 @@
 # ESTADO_PROYECTO — botmef-saas
 
-**Modo:** Creación · **Actualizado:** 2026-08-13 (alta del proyecto, bloque 1 propuesto)
+**Modo:** Mantenimiento · **Actualizado:** 2026-10-13 (repo remoto verificado; sigue sin código)
 
 SaaS multi-tenant de atención al cliente por WhatsApp vía **Meta Cloud API**, cobrado por
 suscripción. Línea comercial de `botmef`; la institucional queda en `D:\MV\botmef` como asistente
@@ -16,7 +16,8 @@ de `gti-app`.
 | Código | **Nada implementado todavía** — solo propuesta y ADRs | — |
 | Bloque 1 (esqueleto multi-tenant) | Propuesto y **aprobado con cambios** por concilio; 10 cambios ya aplicados | `openspec/changes/saas-esqueleto-multi-tenant/` |
 | Decisiones de arranque | ADR-001 (base heredada) · ADR-002 (aislamiento doble barrera) | `adr/` |
-| Repo remoto | ❌ **No creado** — falta `gh` o token en la máquina | ver "Bloqueos" |
+| Repo remoto | ✅ `javilaelias/botmef-saas` existe y tiene el commit inicial (verificado 2026-10-13). Local va 2 commits adelante (ítem `run.bat` de la cola), sin pushear | `origin/master` |
+| Cierre de fábrica | ⏳ Sin `mv.json`, sin respaldo en Drive, sin alta en el catálogo — se hace con `cerrar-proyecto.ps1` | ver "Bloqueos" |
 | Especificación de origen | Prompt técnico completo, 8 bloques de construcción | `D:\MV\botmef\docs\prompts\prompt-clon-comercial.md` |
 | Dirección visual | Heredada de `botmef` — **`juvindiseno` no re-hace benchmark** | `D:\MV\botmef\src\components/` |
 | Trabajo de la fábrica | Bloque 1 en cola, 5 mini-bloques, sin arrancar | `cola-trabajo.md` |
@@ -69,7 +70,9 @@ IA y por qué.
 
 | Bloqueo | Detalle |
 |---|---|
-| **Repo GitHub no creado** | No hay `gh` CLI ni token en la máquina (`winget` tampoco está). Git Credential Manager sí está activo, así que **el push funcionará** una vez que el repo exista. Requiere acción del usuario: crear `botmef-saas` privado y vacío en github.com/new |
+| ~~Repo GitHub no creado~~ | **Resuelto** (verificado 2026-10-13): el repo existe y responde a `git ls-remote`. Queda pendiente pushear los 2 commits locales; lo hace `cerrar-proyecto.ps1` al cerrar el primer bloque |
+| **Ficha y respaldo sin hacer** | No hay `mv.json` ni respaldo en Drive. Ámbito esperado: `comercial` (vive en DESKTOP-BH05CUG). Se cierra con `D:\JuvinFactory\scripts\cerrar-proyecto.ps1` al terminar el bloque 1 |
+| **Hosting de producción** | El VPS DonWeb de 2024 (1 vCPU / 1 GB) no sirve para este producto. Sin decisión tomada; no bloquea los bloques 1–4 |
 | **Sin acceso a Meta Cloud API** | Sin Meta Business verificado ni número dedicado. El bloque 2 se construye contra un simulador de webhooks con firma real; no bloquea los bloques 1–4 |
 
 ## Roadmap (8 bloques del prompt de origen)
