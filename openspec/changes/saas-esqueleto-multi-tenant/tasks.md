@@ -10,24 +10,24 @@ arranque el siguiente. No se agrupan commits.
 
 ## MB1 — Andamiaje del repo
 
-- [ ] Monorepo npm workspaces: `apps/api` (NestJS), `apps/web` (Vite+React), `packages/types`
-- [ ] Clonar la estructura de `D:\MV\invexis\apps\api` **sin** su dominio: se conservan
+- [x] Monorepo npm workspaces: `apps/api` (NestJS), `apps/web` (Vite+React), `packages/types`
+- [x] Clonar la estructura de `D:\MV\invexis\apps\api` **sin** su dominio: se conservan
       `src/common/`, `src/config/`, `src/modules/auth/`, `src/modules/health/`, `src/prisma/`,
       `test/`, `prisma.config.ts`, `eslint.config.mjs`, `tsconfig*.json`, `nest-cli.json`
-- [ ] Borrar todo módulo ITAM heredado (`assets`, `licenses`, `enad`, `rfps`, `vendors`,
+- [x] Borrar todo módulo ITAM heredado (`assets`, `licenses`, `enad`, `rfps`, `vendors`,
       `purchase-requests`, `applications`, `catalog`, `sites`, `reports`, `dashboard`, `agent`)
-- [ ] **(C7)** Dejar `zod` como único validador: no arrastrar `class-validator` /
+- [x] **(C7)** Dejar `zod` como único validador: no arrastrar `class-validator` /
       `class-transformer` del ancestro
-- [ ] **(C4)** `docker-compose.yml`: PostgreSQL 16 **sin `pgvector`** + Redis 7, healthchecks,
+- [x] **(C4)** `docker-compose.yml`: PostgreSQL 16 **sin `pgvector`** + Redis 7, healthchecks,
       puertos 5438 / 6380 — la extensión vectorial llega en el bloque 6
-- [ ] **(C8)** `prisma.config.ts` con dos URLs: `DATABASE_URL` (rol de aplicación) y
+- [x] **(C8)** `prisma.config.ts` con dos URLs: `DATABASE_URL` (rol de aplicación) y
       `MIGRATION_DATABASE_URL` (rol propietario)
-- [ ] `.env.example` con ambas URLs, `JWT_SECRET`, `TOKEN_ENCRYPTION_KEY`, `TOKEN_KEY_VERSION`,
+- [x] `.env.example` con ambas URLs, `JWT_SECRET`, `TOKEN_ENCRYPTION_KEY`, `TOKEN_KEY_VERSION`,
       `ADMIN_PROVISION_KEY`, `REDIS_URL`, `PORT=3011`
-- [ ] `.gitignore` — bloquear `.env`, `node_modules`, `dist`, y explícitamente `bot_sessions/`
+- [x] `.gitignore` — bloquear `.env`, `node_modules`, `dist`, y explícitamente `bot_sessions/`
       (credenciales que quedaron commiteadas en el proyecto ancestro)
-- [ ] CI (`.github/workflows/ci.yml`) adaptado de invexis: lint + build + test
-- [ ] `README.md` + arranque en un comando (`CERO.ps1` / `botmef-saas.bat`, patrón de invexis)
+- [x] CI (`.github/workflows/ci.yml`) adaptado de invexis: lint + build + test
+- [x] `README.md` + arranque en un comando (`CERO.ps1` / `botmef-saas.bat`, patrón de invexis)
 - **Acepta:** `docker compose up` levanta Postgres y Redis con healthcheck verde; `npm run build`
   pasa en `apps/api`; CI verde
 

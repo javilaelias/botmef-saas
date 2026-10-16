@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://app_botmef:app_botmef@localhost:5438/botmef?schema=public
+      MIGRATION_DATABASE_URL: postgresql://botmef_owner:botmef_owner@localhost:5438/botmef?schema=public
+      JWT_SECRET: ci-only-jwt-secret-0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run ci

@@ -1,0 +1,24 @@
+{
+  "name": "botmef-saas",
+  "version": "0.1.0",
+  "private": true,
+  "description": "botmef-saas — atención al cliente por WhatsApp (Meta Cloud API), multi-tenant",
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "dev": "concurrently -n api,web -c green,blue \"npm --workspace apps/api run start:dev\" \"npm --workspace apps/web run dev\"",
+    "dev:api": "npm --workspace apps/api run start:dev",
+    "dev:web": "npm --workspace apps/web run dev",
+    "lint": "npm --workspace apps/api run lint:check && npm --workspace apps/web run lint",
+    "test": "npm --workspace apps/api run test",
+    "test:e2e": "npm --workspace apps/api run test:e2e",
+    "build": "npm --workspace apps/api run build && npm --workspace apps/web run build",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:migrate": "npm --workspace apps/api run db:migrate",
+    "db:seed": "npm --workspace apps/api exec -- prisma db seed",
+    "ci": "npm run lint && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

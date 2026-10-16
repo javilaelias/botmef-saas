@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+*.log
+.DS_Store
+
+# secretos
+.env
+.env.*
+!.env.example
+
+# credenciales de sesion de WhatsApp (quedaron commiteadas en el proyecto ancestro): nunca
+bot_sessions/
+**/bot_sessions/
+
+# prisma
+/generated/prisma
