@@ -1,0 +1,11 @@
+{
+    "version":  1,
+    "nombre":  "botmef-saas",
+    "descripcion":  "SaaS multi-tenant de atencion al cliente por WhatsApp via Meta Cloud API, por suscripcion",
+    "ambito":  "comercial",
+    "fabrica":  "JuvinFactory",
+    "estado_desarrollo":  "iniciado",
+    "despliegue":  "local",
+    "maquina_duena":  "DESKTOP-BH05CUG",
+    "actualizado":  "2026-10-16T14:21:37.1251993Z"
+}
