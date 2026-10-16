@@ -2,6 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcryptjs';
 import { PrismaService } from '../../prisma/prisma.service';
+import { registrarAuditoria } from '../audit/audit';
+
+// Hash de relleno: el tiempo de respuesta no distingue "usuario inexistente" de "clave mala".
+const DUMMY_HASH = bcrypt.hashSync('relleno-timing', 10);
 
 @Injectable()
 export class AuthService {
@@ -10,24 +14,40 @@ export class AuthService {
     private readonly jwt: JwtService,
   ) {}
 
-  // Esqueleto heredado de invexis. OJO: el email solo es único por tenant; la resolución de tenant
-  // en el login (y RLS) llega en MB3/MB4 — no exponer este endpoint con más de un tenant antes.
-  async login(email: string, password: string) {
-    const user = await this.prisma.usuario.findFirst({
-      where: { email: email.toLowerCase() },
+  async login(tenantId: string, email: string, password: string) {
+    const found = await this.prisma.runAsTenant(tenantId, async (tx) => {
+      const tenant = await tx.tenant.findUnique({ where: { id: tenantId } });
+      const user = await tx.usuario.findFirst({
+        where: { email: email.toLowerCase() },
+      });
+      return tenant?.estado === 'activo' ? user : null;
     });
 
-    if (!user || !user.activo || !user.passwordHash) {
+    const ok = await bcrypt.compare(
+      password,
+      found?.passwordHash ?? DUMMY_HASH,
+    );
+    if (!found || !found.activo || !found.passwordHash || !ok) {
       throw new UnauthorizedException('Invalid credentials');
     }
+    const user = found;
 
-    const ok = await bcrypt.compare(password, user.passwordHash);
-    if (!ok) throw new UnauthorizedException('Invalid credentials');
-
-    await this.prisma.usuario.update({
-      where: { id: user.id },
-      data: { ultimoLogin: new Date() },
-    });
+    await this.prisma.runAsTenant(
+      tenantId,
+      async (tx) => {
+        await tx.usuario.update({
+          where: { id: user.id },
+          data: { ultimoLogin: new Date() },
+        });
+        await registrarAuditoria(tx, {
+          accion: 'login',
+          entidad: 'usuario',
+          entidadId: user.id,
+          usuarioId: user.id,
+        });
+      },
+      { userId: user.id, rol: user.rol },
+    );
 
     const accessToken = await this.jwt.signAsync({
       sub: user.id,

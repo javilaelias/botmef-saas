@@ -3,7 +3,11 @@ import { loginSchema } from './login.dto';
 describe('loginSchema (zod)', () => {
   it('acepta credenciales válidas', () => {
     expect(
-      loginSchema.safeParse({ email: 'a@b.co', password: 'abcd1234' }).success,
+      loginSchema.safeParse({
+        tenantId: '00000000-0000-4000-8000-0000000000a1',
+        email: 'a@b.co',
+        password: 'abcd1234',
+      }).success,
     ).toBe(true);
   });
 
@@ -12,7 +16,11 @@ describe('loginSchema (zod)', () => {
       loginSchema.safeParse({ email: 'x', password: 'abcd' }).success,
     ).toBe(false);
     expect(
-      loginSchema.safeParse({ email: 'a@b.co', password: 'abc' }).success,
+      loginSchema.safeParse({
+        tenantId: '00000000-0000-4000-8000-0000000000a1',
+        email: 'a@b.co',
+        password: 'abc',
+      }).success,
     ).toBe(false);
   });
 });

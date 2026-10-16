@@ -8,11 +8,7 @@ import { createRequestLoggerMiddleware } from './common/middleware/request-logge
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    }),
-  );
+  app.use(helmet());
 
   const config = app.get(ConfigService);
   app.use(

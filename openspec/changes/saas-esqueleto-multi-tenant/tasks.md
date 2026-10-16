@@ -72,23 +72,23 @@ arranque el siguiente. No se agrupan commits.
 
 ## MB4 — Enforcement de tenant + auth
 
-- [ ] `AsyncLocalStorage` con el contexto de petición (`tenantId`, `userId`, `rol`)
-- [ ] `TenantGuard`: extrae `tenantId` del JWT y abre el contexto; rechaza token sin tenant
-- [ ] Barrera 1 según el resultado del spike C2: extensión de Prisma que inyecta `tenantId` en el
+- [x] `AsyncLocalStorage` con el contexto de petición (`tenantId`, `userId`, `rol`)
+- [x] `TenantGuard`: extrae `tenantId` del JWT y abre el contexto; rechaza token sin tenant
+- [x] Barrera 1 según el resultado del spike C2: extensión de Prisma que inyecta `tenantId` en el
       `where` (y en `data` para `create`/`createMany`) — **ningún service escribe `tenantId` a
       mano**, lo contrario de invexis
-- [ ] **(C3)** Documentar en el código que `$queryRaw`/`$executeRaw` quedan fuera de la barrera 1
-- [ ] **(C1)** Auth email/password con **`bcryptjs`** (no argon2), JWT con `tenantId`, mensaje de
+- [x] **(C3)** Documentar en el código que `$queryRaw`/`$executeRaw` quedan fuera de la barrera 1
+- [x] **(C1)** Auth email/password con **`bcryptjs`** (no argon2), JWT con `tenantId`, mensaje de
       error genérico — heredado de `invexis/apps/api/src/modules/auth/`
-- [ ] **(C5)** `@nestjs/throttler` sobre `/auth/login` y `helmet` habilitado en `main.ts`
-- [ ] **(C6)** Alta de tenant **cerrada**: seed o endpoint protegido por `ADMIN_PROVISION_KEY`.
+- [x] **(C5)** `@nestjs/throttler` sobre `/auth/login` y `helmet` habilitado en `main.ts`
+- [x] **(C6)** Alta de tenant **cerrada**: seed o endpoint protegido por `ADMIN_PROVISION_KEY`.
       El registro self-service es del bloque 5
-- [ ] Roles `owner` / `agente` / `viewer` con `RolesGuard` (heredado)
-- [ ] **(C5)** Invitación de usuarios por email: token **hasheado en base**, de un solo uso y
+- [x] Roles `owner` / `agente` / `viewer` con `RolesGuard` (heredado)
+- [x] **(C5)** Invitación de usuarios por email: token **hasheado en base**, de un solo uso y
       **con expiración**
-- [ ] **(C5)** Cifrado AES-256-GCM para `token_cifrado`, con `token_key_version` persistida
-- [ ] **(C10)** Escritura en `auditoria` de alta de tenant, login e invitación
-- [ ] **Sin 2FA** — mini-bloque posterior, por decisión del usuario
+- [x] **(C5)** Cifrado AES-256-GCM para `token_cifrado`, con `token_key_version` persistida
+- [x] **(C10)** Escritura en `auditoria` de alta de tenant, login e invitación
+- [x] **Sin 2FA** — mini-bloque posterior, por decisión del usuario
 - **Acepta:** un usuario autenticado solo opera sobre su tenant; un JWT manipulado con otro
   `tenantId` no accede a datos ajenos (RLS lo corta aunque el guard fallara)
 

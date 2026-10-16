@@ -47,6 +47,18 @@ const envSchema = z
         });
       }
 
+      if (
+        !val.TOKEN_ENCRYPTION_KEY ||
+        Buffer.from(val.TOKEN_ENCRYPTION_KEY, 'base64').length !== 32
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['TOKEN_ENCRYPTION_KEY'],
+          message:
+            'TOKEN_ENCRYPTION_KEY (32 bytes base64) is required in production.',
+        });
+      }
+
       if (val.JWT_SECRET === 'change-me-in-prod') {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
