@@ -94,19 +94,19 @@ arranque el siguiente. No se agrupan commits.
 
 ## MB5 — Tests de aislamiento y login
 
-- [ ] **(C9)** La suite de aislamiento va en `test/jest-e2e.json` — el Jest heredado
+- [x] **(C9)** La suite de aislamiento va en `test/jest-e2e.json` — el Jest heredado
       (`rootDir: src`, `testRegex: .*\.spec\.ts$`) no recogería estos tests
-- [ ] Suite de aislamiento con los dos tenants del seed:
-  - [ ] Tenant A no ve conversaciones, mensajes, contactos ni métricas de Tenant B
-  - [ ] Peticiones alternando A y B **sobre el mismo pool** no filtran contexto entre sí
-  - [ ] Una query escrita deliberadamente **sin** filtro de tenant no devuelve filas ajenas
-  - [ ] Escritura con `tenantId` ajeno es rechazada por el `WITH CHECK` de la policy
-  - [ ] **(C2)** La barrera 1 filtra correctamente **con RLS deshabilitado** — única forma de
+- [x] Suite de aislamiento con los dos tenants del seed:
+  - [x] Tenant A no ve conversaciones, mensajes, contactos ni métricas de Tenant B
+  - [x] Peticiones alternando A y B **sobre el mismo pool** no filtran contexto entre sí
+  - [x] Una query escrita deliberadamente **sin** filtro de tenant no devuelve filas ajenas
+  - [x] Escritura con `tenantId` ajeno es rechazada por el `WITH CHECK` de la policy
+  - [x] **(C2)** La barrera 1 filtra correctamente **con RLS deshabilitado** — única forma de
         probar que hay dos barreras y no una disfrazada de dos
-- [ ] Pantalla de login en `apps/web` (Vite + React + Tailwind, dirección visual heredada de botmef)
-- [ ] i18n ES/EN con **default ES explícito** (no Accept-Language), selector persistente
-- [ ] Tema claro/oscuro, default = `prefers-color-scheme`, toggle persistente que prevalece
-- [ ] QA nivel 2: smoke de login en ES/EN × claro/oscuro
+- [x] Pantalla de login en `apps/web` (Vite + React + Tailwind, dirección visual heredada de botmef)
+- [x] i18n ES/EN con **default ES explícito** (no Accept-Language), selector persistente
+- [x] Tema claro/oscuro, default = `prefers-color-scheme`, toggle persistente que prevalece
+- [x] QA nivel 2: smoke de login en ES/EN × claro/oscuro
 - **Acepta:** criterio #1 del prompt de origen demostrado por test automático, no a ojo;
   `npm test` y `npm run test:e2e` verdes en CI
 

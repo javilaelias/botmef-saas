@@ -1,0 +1,4 @@
+@import 'tailwindcss';
+
+/* El tema lo decide la clase `dark` en <html> (ver theme.ts), no solo prefers-color-scheme. */
+@custom-variant dark (&:where(.dark, .dark *));
