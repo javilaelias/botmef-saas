@@ -27,7 +27,7 @@ los 10 cambios exigidos (C1–C10) **ya están aplicados** a `design.md`, `tasks
 
 ## Lanzador (run.bat)
 
-- [ ] Lanzador run.bat: `run.bat` en la raiz que levanta la app completa: BD (docker compose, espera
+- [x] Lanzador run.bat: `run.bat` en la raiz que levanta la app completa: BD (docker compose, espera - cerrado 2026-10-16: `run.bat` en la raíz levanta BD, API y web en ventanas separadas y abre el navegador (no destructivo, avisa si el puerto de la BD está ocupado); probado y detenido.
       a que este sana), backend y frontend, cada uno en su ventana, y abre el navegador; solo las
       piezas que existan. Si ya hay un lanzador que lo hace (`run_project.bat`, `levantar.bat`...),
       `run.bat` solo lo llama. Sin nada que levantar en la PC (app solo movil): lanza lo que exista
@@ -36,6 +36,7 @@ los 10 cambios exigidos (C1–C10) **ya están aplicados** a `design.md`, `tasks
       la BD esta ocupado, lo dice y no mata nada. Mecanico: concilio de 2, `/code-review low`.
       Evidencia: correrlo, citar las URLs que respondieron (o lo que se vio) y detener despues solo
       lo que levanto la prueba.
+      Evidencia: `GET http://localhost:3012/` → 200. `GET http://localhost:3011/api/health` → 404, la API responde. `docker compose ps`: `db` y `redis` healthy. Después, `docker compose down` y los puertos 3011, 3012, 5438 y 6380 libres.
 
 ## Obligaciones que el concilio dejó vigentes
 
