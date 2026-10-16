@@ -87,3 +87,9 @@ IA y por qué.
 8. Panel de administración de la plataforma
 
 Los bloques 1–4 son el producto mínimo demostrable; 5–8 lo vuelven un negocio.
+
+## Cierre de lote (JuvinRelease, 2026-10-16)
+
+- [ ] CERO.ps1/CERO.sh ejecutado desde cero — no corrido en este lote: hace `npm run build` completo y levanta la BD de trabajo; queda para el cierre interactivo del bloque. `run.bat` sí se ejecutó (web 3012 → 200, API 3011 responde, BD y Redis healthy)
+- [ ] migraciones aplicadas sobre BD vacía — no verificado en este ítem; las migraciones corren en la suite e2e (MB3–MB5), pero no se levantó una BD descartable aparte
+- [x] .env.example reconciliado con .env — mismas claves en `.env.example` y `apps/api/.env` (verificado 2026-10-16)
