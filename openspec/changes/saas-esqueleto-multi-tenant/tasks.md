@@ -51,20 +51,20 @@ arranque el siguiente. No se agrupan commits.
 
 ## MB3 — Row Level Security
 
-- [ ] **(C2) SPIKE BLOQUEANTE — va primero, antes de escribir el helper.** Probar que una Client
+- [x] **(C2) SPIKE BLOQUEANTE — va primero, antes de escribir el helper.** Probar que una Client
       Extension de Prisma 7.5 + `@prisma/adapter-pg` se aplica al cliente `tx` dentro de una
       `$transaction` interactiva. **Si no se propaga**, la barrera 1 se muda de la extensión a
       `runInTenantContext`. No se avanza a MB4 sin esta respuesta por escrito
-- [ ] Rol de Postgres `app_botmef` **sin `BYPASSRLS`** y que **no** es dueño de las tablas;
+- [x] Rol de Postgres `app_botmef` **sin `BYPASSRLS`** y que **no** es dueño de las tablas;
       migraciones con el rol propietario vía `MIGRATION_DATABASE_URL`
-- [ ] Migración SQL: `ENABLE` + **`FORCE ROW LEVEL SECURITY`** en cada tabla con `tenant_id`
-- [ ] Policy `tenant_aislamiento` por tabla, con `USING` y `WITH CHECK`
+- [x] Migración SQL: `ENABLE` + **`FORCE ROW LEVEL SECURITY`** en cada tabla con `tenant_id`
+- [x] Policy `tenant_aislamiento` por tabla, con `USING` y `WITH CHECK`
       (`current_setting('app.tenant_id', true)::uuid`)
-- [ ] Helper `runInTenantContext(tenantId, fn)`: `$transaction` +
+- [x] Helper `runInTenantContext(tenantId, fn)`: `$transaction` +
       `set_config('app.tenant_id', …, true)` — alcance de transacción, **parametrizado**, nunca
       por interpolación de cadena (C3)
-- [ ] Test: una conexión que no fijó `app.tenant_id` no lee **ninguna** fila
-- [ ] Test: el rol de la aplicación no tiene `BYPASSRLS` (consulta a `pg_roles`)
+- [x] Test: una conexión que no fijó `app.tenant_id` no lee **ninguna** fila
+- [x] Test: el rol de la aplicación no tiene `BYPASSRLS` (consulta a `pg_roles`)
 - **Acepta:** los dos tests pasan; el seed sigue funcionando con el rol propietario; el spike C2
   está respondido y documentado en el propio `design.md`
 - **Riesgo vigilado:** fuga de tenant entre peticiones por reuso de conexión del pool. El test de

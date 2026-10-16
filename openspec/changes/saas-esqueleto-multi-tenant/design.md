@@ -64,6 +64,14 @@ estar resuelto, pero **no se construye MB4 sobre una suposición**. MB3 empieza 
 propagan, la barrera 1 se muda de la extensión al propio `runInTenantContext`, que aplica el filtro
 antes de delegar en `fn(tx)`.
 
+**Resultado del spike C2 (2026-10-16): SÍ se propaga.** Con Prisma 7.10.1 (^7.5) + `@prisma/adapter-pg`,
+una extensión `query.$allModels.$allOperations` se ejecuta también para las consultas hechas con el `tx`
+de `$extends(...).$transaction(async (tx) => ...)` (contador: 1 llamada fuera de la transacción, 2 tras
+una consulta dentro). La barrera 1 puede ser una extensión (MB4). Aun así `runInTenantContext` recibe el
+`PrismaClient` y MB4 debe pasarle el cliente ya extendido. Las policies usan
+`NULLIF(current_setting('app.tenant_id', true), '')::uuid`: fuera de una transacción el GUC vuelve como
+cadena vacía y `''::uuid` lanzaría error en vez de devolver cero filas.
+
 **Límites conocidos de la barrera 1 (C3 del concilio).** No es una red completa, y JuvinDev debe
 saber dónde tiene agujeros:
 
