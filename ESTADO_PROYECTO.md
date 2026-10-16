@@ -1,6 +1,6 @@
 # ESTADO_PROYECTO — botmef-saas
 
-**Modo:** Mantenimiento · **Actualizado:** 2026-10-16 (MB1 cerrado)
+**Modo:** Mantenimiento · **Actualizado:** 2026-10-16 (MB2 cerrado)
 
 SaaS multi-tenant de atención al cliente por WhatsApp vía **Meta Cloud API**, cobrado por
 suscripción. Línea comercial de `botmef`; la institucional queda en `D:\MV\botmef` como asistente
@@ -13,7 +13,7 @@ de `gti-app`.
 
 | Área | Estado | Puntero |
 |---|---|---|
-| Código | **MB1 hecho**: monorepo, apps/api sin ITAM, compose PG16+Redis7, CI, CERO.ps1. Schema real = MB2 | `apps/`, `openspec/changes/archive/2026-10-16-mb1-andamiaje-repo/` |
+| Código | **MB1+MB2 hechos**: monorepo, apps/api sin ITAM, compose PG16+Redis7, CI; schema de 11 tablas + migración `init_multi_tenant` + seed (2 tenants). Sigue MB3 (RLS) | `apps/`, `openspec/changes/archive/2026-10-16-mb2-schema-prisma/` |
 | Bloque 1 (esqueleto multi-tenant) | Propuesto y **aprobado con cambios** por concilio; 10 cambios ya aplicados | `openspec/changes/saas-esqueleto-multi-tenant/` |
 | Decisiones de arranque | ADR-001 (base heredada) · ADR-002 (aislamiento doble barrera) | `adr/` |
 | Repo remoto | ✅ `javilaelias/botmef-saas` existe y tiene el commit inicial (verificado 2026-10-13). Local va 2 commits adelante (ítem `run.bat` de la cola), sin pushear | `origin/master` |

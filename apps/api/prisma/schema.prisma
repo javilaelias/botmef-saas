@@ -1,4 +1,5 @@
-// Andamiaje (MB1): solo lo mínimo para que auth compile. El schema real (design.md §3) llega en MB2.
+// Schema de botmef-saas (design.md §3). Toda tabla de negocio lleva tenant_id; la unicidad es siempre
+// compuesta con tenantId. Sin pgvector: kb.embedding llega en el bloque 6 (C4).
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,27 +8,251 @@ datasource db {
   provider = "postgresql"
 }
 
+enum PlanTenant {
+  free
+  starter
+  pro
+}
+
+enum EstadoTenant {
+  activo
+  suspendido
+}
+
+enum RolUsuario {
+  owner
+  agente
+  viewer
+}
+
+enum EstadoConversacion {
+  abierta
+  pendiente
+  cerrada
+}
+
+enum DireccionMensaje {
+  entrante
+  saliente
+}
+
+enum EstadoMensaje {
+  recibido
+  enviado
+  entregado
+  leido
+  fallido
+}
+
+enum CategoriaPlantilla {
+  marketing
+  utilidad
+  autenticacion
+}
+
+enum EstadoMeta {
+  borrador
+  pendiente
+  aprobada
+  rechazada
+}
+
 model Tenant {
-  id       String    @id @default(uuid()) @db.Uuid
-  nombre   String    @db.VarChar(140)
-  usuarios Usuario[]
+  id       String       @id @default(uuid()) @db.Uuid
+  nombre   String       @db.VarChar(140)
+  plan     PlanTenant   @default(free)
+  estado   EstadoTenant @default(activo)
+  creadoEn DateTime     @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  usuarios       Usuario[]
+  numeros        NumeroWhatsapp[]
+  conversaciones Conversacion[]
+  mensajes       Mensaje[]
+  contactos      Contacto[]
+  optIns         OptIn[]
+  plantillas     Plantilla[]
+  kb             Kb[]
+  consumos       Consumo[]
+  auditorias     Auditoria[]
 
   @@map("tenants")
 }
 
 model Usuario {
-  id           String    @id @default(uuid()) @db.Uuid
-  tenantId     String    @map("tenant_id") @db.Uuid
-  email        String    @db.VarChar(190)
-  nombre       String    @db.VarChar(140)
-  rol          String    @db.VarChar(20)
-  activo       Boolean   @default(true)
-  passwordHash String?   @map("password_hash") @db.VarChar(255)
-  ultimoLogin  DateTime? @map("ultimo_login") @db.Timestamptz(6)
+  id           String     @id @default(uuid()) @db.Uuid
+  tenantId     String     @map("tenant_id") @db.Uuid
+  email        String     @db.VarChar(190)
+  nombre       String     @db.VarChar(140)
+  rol          RolUsuario @default(agente)
+  activo       Boolean    @default(true)
+  passwordHash String?    @map("hash_password") @db.VarChar(255)
+  ultimoLogin  DateTime?  @map("ultimo_login") @db.Timestamptz(6)
+  creadoEn     DateTime   @default(now()) @map("creado_en") @db.Timestamptz(6)
 
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant     Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  asignadas  Conversacion[]
+  auditorias Auditoria[]
 
   @@unique([tenantId, email])
   @@index([tenantId, rol])
   @@map("usuarios")
+}
+
+model NumeroWhatsapp {
+  id               String   @id @default(uuid()) @db.Uuid
+  tenantId         String   @map("tenant_id") @db.Uuid
+  phoneNumberId    String   @map("phone_number_id") @db.VarChar(64)
+  wabaId           String   @map("waba_id") @db.VarChar(64)
+  displayNumber    String   @map("display_number") @db.VarChar(32)
+  // AES-256-GCM en aplicación; la versión de clave permite rotar (C5).
+  tokenCifrado     String   @map("token_cifrado")
+  tokenKeyVersion  Int      @default(1) @map("token_key_version")
+  calidad          String?  @db.VarChar(20)
+  limiteMensajeria String?  @map("limite_mensajeria") @db.VarChar(40)
+  creadoEn         DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  conversaciones Conversacion[]
+
+  @@unique([tenantId, phoneNumberId])
+  @@index([tenantId])
+  @@map("numeros_whatsapp")
+}
+
+model Contacto {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  telefono  String   @db.VarChar(32)
+  nombre    String?  @db.VarChar(140)
+  atributos Json     @default("{}") @db.JsonB
+  creadoEn  DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  conversaciones Conversacion[]
+  optIns         OptIn[]
+
+  @@unique([tenantId, telefono])
+  @@index([tenantId])
+  @@map("contactos")
+}
+
+model Conversacion {
+  id              String             @id @default(uuid()) @db.Uuid
+  tenantId        String             @map("tenant_id") @db.Uuid
+  numeroId        String             @map("numero_id") @db.Uuid
+  contactoId      String             @map("contacto_id") @db.Uuid
+  estado          EstadoConversacion @default(abierta)
+  ventanaExpiraEn DateTime?          @map("ventana_expira_en") @db.Timestamptz(6)
+  asignadaA       String?            @map("asignada_a") @db.Uuid
+  etiquetas       String[]           @default([])
+  creadaEn        DateTime           @default(now()) @map("creada_en") @db.Timestamptz(6)
+
+  tenant   Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  numero   NumeroWhatsapp @relation(fields: [numeroId], references: [id], onDelete: Cascade)
+  contacto Contacto       @relation(fields: [contactoId], references: [id], onDelete: Cascade)
+  asignada Usuario?       @relation(fields: [asignadaA], references: [id], onDelete: SetNull)
+  mensajes Mensaje[]
+
+  @@unique([tenantId, numeroId, contactoId])
+  @@index([tenantId, estado])
+  @@index([tenantId, asignadaA])
+  @@map("conversaciones")
+}
+
+model Mensaje {
+  id             String           @id @default(uuid()) @db.Uuid
+  tenantId       String           @map("tenant_id") @db.Uuid
+  conversacionId String           @map("conversacion_id") @db.Uuid
+  direccion      DireccionMensaje
+  // Id de Meta; Meta reenvía webhooks, así que es único por tenant (anti-duplicado, bloque 2).
+  wamid          String           @db.VarChar(128)
+  tipo           String           @default("text") @db.VarChar(20)
+  texto          String?
+  mediaUrl       String?          @map("media_url")
+  estado         EstadoMensaje    @default(recibido)
+  creadoEn       DateTime         @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  tenant       Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  conversacion Conversacion @relation(fields: [conversacionId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, wamid])
+  @@index([tenantId, conversacionId, creadoEn])
+  @@map("mensajes")
+}
+
+model OptIn {
+  id         String   @id @default(uuid()) @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  contactoId String   @map("contacto_id") @db.Uuid
+  canal      String   @default("whatsapp") @db.VarChar(20)
+  prueba     Json     @default("{}") @db.JsonB
+  estado     String   @default("activo") @db.VarChar(20)
+  creadoEn   DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  tenant   Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  contacto Contacto @relation(fields: [contactoId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, contactoId])
+  @@map("opt_ins")
+}
+
+model Plantilla {
+  id         String             @id @default(uuid()) @db.Uuid
+  tenantId   String             @map("tenant_id") @db.Uuid
+  nombre     String             @db.VarChar(140)
+  categoria  CategoriaPlantilla
+  idioma     String             @db.VarChar(10)
+  estadoMeta EstadoMeta         @default(borrador) @map("estado_meta")
+  cuerpo     String
+  variables  String[]           @default([])
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, nombre, idioma])
+  @@index([tenantId, estadoMeta])
+  @@map("plantillas")
+}
+
+// Sin columna embedding (C4): se agrega con pgvector en el bloque 6.
+model Kb {
+  id        String @id @default(uuid()) @db.Uuid
+  tenantId  String @map("tenant_id") @db.Uuid
+  categoria String @db.VarChar(80)
+  pregunta  String
+  respuesta String
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId, categoria])
+  @@map("kb")
+}
+
+model Consumo {
+  id                         String  @id @default(uuid()) @db.Uuid
+  tenantId                   String  @map("tenant_id") @db.Uuid
+  periodo                    String  @db.VarChar(7)
+  conversacionesPorCategoria Json    @default("{}") @map("conversaciones_por_categoria") @db.JsonB
+  costo                      Decimal @default(0) @db.Decimal(12, 4)
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, periodo])
+  @@map("consumo")
+}
+
+// Escritores (alta de tenant, login, invitación) llegan en MB4 (C10).
+model Auditoria {
+  id        String   @id @default(uuid()) @db.Uuid
+  tenantId  String   @map("tenant_id") @db.Uuid
+  usuarioId String?  @map("usuario_id") @db.Uuid
+  accion    String   @db.VarChar(60)
+  entidad   String   @db.VarChar(60)
+  entidadId String?  @map("entidad_id") @db.VarChar(64)
+  creadoEn  DateTime @default(now()) @map("creado_en") @db.Timestamptz(6)
+
+  tenant  Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  usuario Usuario? @relation(fields: [usuarioId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, creadoEn])
+  @@map("auditoria")
 }

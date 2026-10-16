@@ -33,19 +33,19 @@ arranque el siguiente. No se agrupan commits.
 
 ## MB2 — Schema Prisma y primera migración
 
-- [ ] `schema.prisma` con las tablas de `design.md` §3, todas con `tenantId`
-- [ ] Convenciones: `@map("tenant_id")`, `@@unique([tenantId, …])`, `@@index([tenantId, …])`,
+- [x] `schema.prisma` con las tablas de `design.md` §3, todas con `tenantId`
+- [x] Convenciones: `@map("tenant_id")`, `@@unique([tenantId, …])`, `@@index([tenantId, …])`,
       cascada desde `Tenant`
-- [ ] Vocabulario de dominio alineado con `D:\MV\botmef\src\types.ts` (no copiar código)
-- [ ] Enums: `PlanTenant`, `EstadoTenant`, `RolUsuario`, `EstadoConversacion`, `DireccionMensaje`,
+- [x] Vocabulario de dominio alineado con `D:\MV\botmef\src\types.ts` (no copiar código)
+- [x] Enums: `PlanTenant`, `EstadoTenant`, `RolUsuario`, `EstadoConversacion`, `DireccionMensaje`,
       `EstadoMensaje`, `CategoriaPlantilla`, `EstadoMeta`
-- [ ] `@@unique([tenantId, wamid])` en `mensajes` (defensa anti-duplicado del bloque 2)
-- [ ] **(C4)** `kb` **sin** columna `embedding`; nada de `pgvector` en este bloque
-- [ ] **(C10)** `auditoria` se crea **con** los escritores que la usan en MB4 (alta de tenant,
+- [x] `@@unique([tenantId, wamid])` en `mensajes` (defensa anti-duplicado del bloque 2)
+- [x] **(C4)** `kb` **sin** columna `embedding`; nada de `pgvector` en este bloque
+- [x] **(C10)** `auditoria` se crea **con** los escritores que la usan en MB4 (alta de tenant,
       login, invitación) — si por algún motivo no se escribiera, la tabla se difiere
-- [ ] **(C5)** `numeros_whatsapp.token_cifrado` acompañado de `token_key_version`
-- [ ] Migración inicial `init_multi_tenant` generada por Prisma
-- [ ] Seed con dos tenants de prueba (necesario para los tests de MB5)
+- [x] **(C5)** `numeros_whatsapp.token_cifrado` acompañado de `token_key_version`
+- [x] Migración inicial `init_multi_tenant` generada por Prisma
+- [x] Seed con dos tenants de prueba (necesario para los tests de MB5)
 - **Acepta:** `prisma validate` pasa; `migrate deploy` aplica limpio sobre base vacía;
   `migrate status` sin pendientes; ninguna tabla de negocio sin `tenant_id`
 
